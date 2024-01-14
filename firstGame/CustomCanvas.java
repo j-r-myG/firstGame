@@ -4,20 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.lang.reflect.Array;
 import java.util.TimerTask;
+import java.util.Arrays;
 import java.util.Timer;
 
 
 public class CustomCanvas extends Canvas{
     public int x;
     public int y;
-    public int virtualX = 100;
-    public int virtualY = 40;
+    public int virtualX = 150;
+    public int virtualY = 150;
     public int pos = 8;
     Timer timer;
     TimerTask task;
@@ -32,11 +29,17 @@ public class CustomCanvas extends Canvas{
     Image[] img = new Image[16]; // Store character images
     ImageIcon icon;
     Rectangle rect;
+    Rectangle coin;
 
+
+    RNG rng = new RNG();
+    int[] spawn = rng.generate_coin(); // generate random coordinate of coin.
+
+    //"C:\Users\asusx\source\IT173P\Java Canvas\firstGame\firstGame\character"
     public CustomCanvas(){
         for (int d = 0; d < directions.length; d++) {
             for (int f = 1; f <= 4; f++) {
-                icon = new ImageIcon("/character/" + directions[d] + f + ".png");
+                icon = new ImageIcon("\\character\\" + directions[d] + f + ".png");
                 img[index] = icon.getImage();
                 index++;
             }//loop frame to create all images in array form
@@ -51,7 +54,7 @@ public class CustomCanvas extends Canvas{
             }//end run
         };//end task 
 
-        timer.schedule(task, 1000, 100);
+        timer.schedule(task, 750, 100);
         setBackground(Color.DARK_GRAY);
 
         addKeyListener(new KeyAdapter() {
@@ -67,15 +70,37 @@ public class CustomCanvas extends Canvas{
                 moving = false;
             }
         });
-
+        
     }
     @Override
     public void paint(Graphics g){
+        super.paint(g);
+
         rect = new Rectangle( virtualX , virtualY,imgCurent.getWidth(this)+5, imgCurent.getHeight(this)+5);   
         g.setColor ( Color.RED );       
         g.fillRect ( rect.x,rect.y,rect.width,rect.height ); 
         g.drawImage(imgCurent, virtualX, virtualY, this); 
+
+        coin = new Rectangle(spawn[0],spawn[1],25, 25);        
+        g.setColor ( Color.YELLOW );        
+        g.fillRect (coin.x,coin.y,coin.width,coin.height);
+        g.drawRect(coin.x, coin.y, 25, 25);
+
+        Collide();
     }
+
+    public void Collide(){      
+        if (rect.intersects(coin)){                  
+          System.out.println("wakokok nagbanggaan!!!");  
+          /* virtualX= 0;
+          virtualY= 0;  */
+          /* icon = new ImageIcon("die.png");
+          imgCurent = icon.getImage();     */
+          spawn = rng.generate_coin(); // change coordinate of coin.
+          System.out.println(Arrays.toString(spawn));
+          repaint();
+       } 
+    }    
     public void moveIt(){
         if (!moving){
             return;

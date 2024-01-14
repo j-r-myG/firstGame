@@ -10,11 +10,12 @@ public class main extends JFrame{
     int x, y;
     
     public main(){
+        int width = 300, height = 300;
         Container Pane;
         Pane = getContentPane();
         Pane.setLayout(null);
         DrawingArea = new CustomCanvas();
-        DrawingArea.setBounds(0, 0, 500, 500);
+        DrawingArea.setBounds(0, 0, width, height);
 
         Pane.add(DrawingArea);
 
@@ -25,7 +26,7 @@ public class main extends JFrame{
             }
         });
 
-        setSize(500, 500);
+        setSize(width, height);
         show();
     }
 

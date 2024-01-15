@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class RNG {
 
-    public int[] generate_coin(){
+    public int[] generate_coord(){
         Random rand = new Random();
         int[] spawn = new int[3]; // for storing x and y coordinates.
 

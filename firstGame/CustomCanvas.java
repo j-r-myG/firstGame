@@ -11,29 +11,27 @@ import java.util.Timer;
 
 
 public class CustomCanvas extends Canvas{
-    public int x;
-    public int y;
-    public int virtualX = 150;
-    public int virtualY = 150;
+    public int x, y;
+    public int virtualX = 150, virtualY = 150;
     public int pos = 8;
     Timer timer;
     TimerTask task;
 
     Image imgCurent;
     boolean moving = false;
-    int gameAction;
-    int frame;
-    int index = 0;
+    int gameAction, frame, index = 0;
 
     String[] directions = {"U", "D", "L", "R"};
     Image[] img = new Image[16]; // Store character images
     ImageIcon icon;
-    Rectangle rect;
-    Rectangle coin;
+    Rectangle player, coin, enemy;
+    int enemy_width = 20, enemy_height = 20;
 
+    int player_speed = 8;
 
     RNG rng = new RNG();
-    int[] spawn = rng.generate_coin(); // generate random coordinate of coin.
+    int[] spawn_coin = rng.generate_coord(); // generate random coordinate of coin.
+    int[] spawn_enemy = rng.generate_coord(); 
 
     //"C:\Users\asusx\source\IT173P\Java Canvas\firstGame\firstGame\character"
     public CustomCanvas(){
@@ -76,28 +74,51 @@ public class CustomCanvas extends Canvas{
     public void paint(Graphics g){
         super.paint(g);
 
-        rect = new Rectangle( virtualX , virtualY,imgCurent.getWidth(this)+5, imgCurent.getHeight(this)+5);   
+        player = new Rectangle( virtualX , virtualY,imgCurent.getWidth(this)+5, imgCurent.getHeight(this)+5);   
         g.setColor ( Color.RED );       
-        g.fillRect ( rect.x,rect.y,rect.width,rect.height ); 
+        g.fillRect ( player.x,player.y,player.width,player.height ); 
         g.drawImage(imgCurent, virtualX, virtualY, this); 
 
-        coin = new Rectangle(spawn[0],spawn[1],25, 25);        
+        coin = new Rectangle(spawn_coin[0],spawn_coin[1],25, 25);        
         g.setColor ( Color.YELLOW );        
         g.fillRect (coin.x,coin.y,coin.width,coin.height);
         g.drawRect(coin.x, coin.y, 25, 25);
 
+        enemy = new Rectangle(spawn_enemy[0], spawn_enemy[1], enemy_width, enemy_height);
+        g.setColor(Color.GREEN);
+        /* if (enemy.x > rect.x){
+            enemy.x = enemy.x - enemy_speed;
+        }
+        if (enemy.x < rect.x){
+            enemy.x = enemy.x + enemy_speed;
+        }
+        if (enemy.y > rect.y){
+            enemy.y = enemy.y - enemy_speed;
+        }
+        if (enemy.y > rect.y){
+            enemy.y = enemy.y - enemy_speed;
+        } */
+        g.fillRect(enemy.x, enemy.y, enemy_width, enemy_height);
+        g.drawRect(enemy.x, enemy.y, enemy_width, enemy_height); 
+
         Collide();
     }
 
+    public void spawn(){
+        spawn_coin = rng.generate_coord(); 
+        spawn_enemy = rng.generate_coord(); 
+        System.out.println("Coin: "+Arrays.toString(spawn_coin));
+        System.out.println("Enemy: "+Arrays.toString(spawn_enemy));
+    }
+
     public void Collide(){      
-        if (rect.intersects(coin)){                  
+        if (player.intersects(coin)){                  
           System.out.println("wakokok nagbanggaan!!!");  
           /* virtualX= 0;
           virtualY= 0;  */
           /* icon = new ImageIcon("die.png");
           imgCurent = icon.getImage();     */
-          spawn = rng.generate_coin(); // change coordinate of coin.
-          System.out.println(Arrays.toString(spawn));
+          spawn();
           repaint();
        } 
     }    

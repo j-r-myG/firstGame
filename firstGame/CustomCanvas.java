@@ -22,25 +22,23 @@ public class CustomCanvas extends Canvas {
     String[] directions = { "U", "D", "L", "R" };
     Image[] img = new Image[16]; // Store character images
     ImageIcon icon;
-    Rectangle player, coin, enemy, speed_up, speed_down;
+    Rectangle player, coin, enemy, speed_down;
 
     int enemy_width = 20, enemy_height = 20;
     int coin_width = 25, coin_height = 25;
     int level = 1;
-    int player_speed = 8, enemy_speed = 1;
+    int player_speed = 8, enemy_speed = 2;
 
     RNG rng = new RNG();
     int[] spawn_coin = rng.generate_coord(); // generate random coordinate of coin.
-    int[] spawn_up = rng.generate_coord();
     int[] spawn_down = rng.generate_coord();
     int[] spawn_enemy = rng.generate_coord();
     public int en_x = spawn_enemy[0], en_y = spawn_enemy[1];// for enemy
 
-    // "C:\Users\asusx\source\IT173P\Java Canvas\firstGame\firstGame\character"
     public CustomCanvas() {
         for (int d = 0; d < directions.length; d++) {
             for (int f = 1; f <= 4; f++) {
-                icon = new ImageIcon("character/" + directions[d] + f + ".png");
+                icon = new ImageIcon(directions[d] + f + ".png");
                 img[index] = icon.getImage();
                 index++;
             } // loop frame to create all images in array form
@@ -77,7 +75,11 @@ public class CustomCanvas extends Canvas {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-
+        int Height;
+        Height = getHeight();
+        g.setFont(new Font("Arial", Font.BOLD, 16));
+        g.drawString("Level: "+level, 10, Height / 2);
+           
         player = new Rectangle(virtualX, virtualY, imgCurent.getWidth(this) + 5, imgCurent.getHeight(this) + 5);
         g.setColor(Color.RED);
         g.fillRect(player.x, player.y, player.width, player.height);
@@ -87,11 +89,6 @@ public class CustomCanvas extends Canvas {
         g.setColor(Color.YELLOW);
         g.fillRect(coin.x, coin.y, coin.width, coin.height);
         g.drawRect(coin.x, coin.y, 25, 25);
-
-        speed_up = new Rectangle(spawn_up[0], spawn_down[1], enemy_width, enemy_height);
-        g.setColor(Color.BLUE);
-        g.fillRect(speed_up.x, speed_up.y, speed_up.width, speed_up.height);
-        g.drawRect(speed_up.x, speed_up.y, speed_up.width, speed_up.height);
 
         speed_down = new Rectangle(spawn_down[0], spawn_down[1], enemy_width, enemy_height);
         g.setColor(Color.PINK);
@@ -108,18 +105,15 @@ public class CustomCanvas extends Canvas {
 
     public void spawn() {
         spawn_coin = rng.generate_coord();
-        spawn_up = rng.generate_coord();
         spawn_down = rng.generate_coord();
+        /* en_x = 50;
+        en_y = 50; */
         System.out.println("Coin: " + Arrays.toString(spawn_coin));
     }
 
-    public void remove_up(){
-        spawn_up[0] = 400;
-        spawn_up[1] = 400;
-    }
-    public void remove_down(){
-        spawn_down[0] = 400;
-        spawn_down[1] = 400;
+
+    public void change_down() {
+        spawn_down = rng.generate_coord();
     }
 
     public void Collide() {
@@ -134,22 +128,28 @@ public class CustomCanvas extends Canvas {
              * imgCurent = icon.getImage();
              */
             spawn();
-            repaint();
-        }
-        if (player.intersects(speed_up)) {
-            enemy_speed += 1;
-            remove_up();
-            System.err.println("enemy speed +");
+            level +=1;
+            if(enemy_speed < 5){
+                enemy_speed += 1;
+            }
+            if(level == 10){
+                endgame("You have won!");
+            }
+            System.err.println("Enemy Speed: "+enemy_speed);
             repaint();
         }
         if (player.intersects(speed_down)) {
-            enemy_speed -= 1;
-            remove_down();
+            if(enemy_speed != 1){
+                change_down();
+                enemy_speed -= 1;
+            }
+            change_down();
             System.err.println("enemy speed -");
             repaint();
         }
-        if(player.intersects(enemy)){
+        if (player.intersects(enemy)) {
             System.err.println("Lose!!");
+            endgame("You have died!");
         }
     }
 
@@ -167,7 +167,20 @@ public class CustomCanvas extends Canvas {
             en_x += enemy_speed;
         }
     }
-
+    public void teleport(){
+        if(virtualX < 10){
+            virtualX = 290;
+        }
+        if(virtualX > 290){
+            virtualX = 10;
+        }
+        if(virtualY < 10){
+            virtualY = 290;
+        }
+        if(virtualY > 290){
+            virtualY = 10;
+        }
+    }
     public void moveIt() {
         if (!moving) {
             return;
@@ -177,6 +190,7 @@ public class CustomCanvas extends Canvas {
             case KeyEvent.VK_DOWN:
                 x = 1;
                 virtualY += 5;
+                teleport();
                 frame = (frame + 1) % 4;
                 imgCurent = img[frame + 4];
                 move_enemy();
@@ -185,6 +199,7 @@ public class CustomCanvas extends Canvas {
             case KeyEvent.VK_UP:
                 x = 2;
                 virtualY -= 5;
+                teleport();
                 frame = (frame + 1) % 4;
                 imgCurent = img[frame + 0];
                 move_enemy();
@@ -194,6 +209,7 @@ public class CustomCanvas extends Canvas {
                 x = 3;
                 // movementleft();
                 virtualX -= 5;
+                teleport();
                 frame = (frame + 1) % 4;
                 imgCurent = img[frame + 8];
                 move_enemy();
@@ -203,6 +219,7 @@ public class CustomCanvas extends Canvas {
                 x = 4;
                 // movementright();
                 virtualX += 5;
+                teleport();
                 frame = (frame + 1) % 4;
                 imgCurent = img[frame + 12];
                 move_enemy();
@@ -210,10 +227,15 @@ public class CustomCanvas extends Canvas {
                 break;
         }
     }
-
-    public void death(){
-        player_speed = 0;
-        enemy_speed = 0;
-
+    public void endgame(String msg){
+        //this.setEnabled(false);
+        System.exit(0);
+        en_x = 50;
+        en_y = 50;
+        virtualX = 100;
+        virtualY = 100;
+        JOptionPane.showMessageDialog(this, msg,
+                "INFORMATION",
+                JOptionPane.INFORMATION_MESSAGE);        
     }
 }

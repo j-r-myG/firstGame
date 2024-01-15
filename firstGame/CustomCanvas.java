@@ -30,10 +30,10 @@ public class CustomCanvas extends Canvas{
     ImageIcon icon;
     Rectangle rect;
     Rectangle coin;
-
+    Rectangle enemy;
 
     RNG rng = new RNG();
-    int[] spawn = rng.generate_coin(); // generate random coordinate of coin.
+    int[] spawn = rng.generate_coin();
 
     //"C:\Users\asusx\source\IT173P\Java Canvas\firstGame\firstGame\character"
     public CustomCanvas(){
@@ -89,6 +89,10 @@ public class CustomCanvas extends Canvas{
         Collide();
     }
 
+    public void spawn_something(){
+        spawn = rng.generate_coin(); // change coordinates.
+    }
+
     public void Collide(){      
         if (rect.intersects(coin)){                  
           System.out.println("wakokok nagbanggaan!!!");  
@@ -96,7 +100,7 @@ public class CustomCanvas extends Canvas{
           virtualY= 0;  */
           /* icon = new ImageIcon("die.png");
           imgCurent = icon.getImage();     */
-          spawn = rng.generate_coin(); // change coordinate of coin.
+          spawn_something();
           System.out.println(Arrays.toString(spawn));
           repaint();
        } 

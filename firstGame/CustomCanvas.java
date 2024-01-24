@@ -35,6 +35,8 @@ public class CustomCanvas extends Canvas {
     int[] spawn_enemy = rng.generate_coord();
     public int en_x = spawn_enemy[0], en_y = spawn_enemy[1];// for enemy
 
+    //Move move = new Move(virtualX, virtualY, player_speed, gameAction, moving, en_x, en_y, enemy_speed); // whoa oop stuff such programmer.
+
     public CustomCanvas() {
         for (int d = 0; d < directions.length; d++) {
             for (int f = 1; f <= 4; f++) {
@@ -131,7 +133,7 @@ public class CustomCanvas extends Canvas {
              */
             spawn();
             level +=1;
-            if(enemy_speed < 5){
+            if(enemy_speed < 4){
                 enemy_speed += 1;
             }
             if(level == 10){
@@ -158,6 +160,7 @@ public class CustomCanvas extends Canvas {
 
     public void moveIt() {
         Move move = new Move(virtualX, virtualY, player_speed, gameAction, moving, en_x, en_y, enemy_speed); // whoa oop stuff such programmer.
+        //move.move_player();
         virtualX = move.player_x;
         virtualY = move.player_y;
         en_x = move.enemy_x;

@@ -8,9 +8,9 @@ import java.awt.event.WindowEvent;
 public class main extends JFrame{
     CustomCanvas DrawingArea;
     int x, y;
-    
+    int boundary = 400;
     public main(){
-        int width = 300, height = 300;
+        int width = boundary, height = boundary;
         Container Pane;
         Pane = getContentPane();
         Pane.setLayout(null);

@@ -2,16 +2,12 @@ package firstGame;
 
 import java.awt.event.KeyEvent;
 
-
 public class Move{
-    int player_x;
-    int player_y; 
-    int player_speed; 
+    int player_x, player_y, player_speed; 
+    int enemy_x, enemy_y, enemy_speed;
     int gameAction;
     boolean moving;
-    int enemy_x; 
-    int enemy_y; 
-    int enemy_speed;
+    int boundary = 400, acceptable = 25, offset = 10;
     public  Move(int player_x, int player_y, int player_speed, int gameAction, boolean moving, int enemy_x, int enemy_y, int enemy_speed){
         //int player_x, int player_y, int player_speed, int gameAction, boolean moving
         this.player_x = player_x;
@@ -23,48 +19,43 @@ public class Move{
         this.enemy_y = enemy_y;
         this.enemy_speed = enemy_speed;
         move_player();
+        move_enemy();
     }
-    public void move_player(){
-        // return player and enemy coord.
-        // int[] player_moved = {0};
-        // int[] enemy_moved = new int[2];
+    private void move_player(){
         if(moving){
-            //this.player_x += 10;
             switch (gameAction) {
             case KeyEvent.VK_DOWN:
                 this.player_y += 5;
                 teleport();
-                move_enemy();
+                //move_enemy();
                 break;
             case KeyEvent.VK_UP:
                 this.player_y -= 5;
                 teleport();
-                move_enemy();
+                //move_enemy();
                 break;
             case KeyEvent.VK_LEFT:
-                // movementleft();
                 this.player_x -= 5;
                 teleport();
-                move_enemy();
+                //move_enemy();
                 break;
             case KeyEvent.VK_RIGHT:
-                // movementright();
                 this.player_x += 5;
                 teleport();
-                move_enemy();
+                //move_enemy();
                 break;
             }
-            System.err.println(gameAction);
-            System.err.println("Player x: " + player_x);
-            System.err.println("Player y: " + player_y);
-            System.err.println("Enemy x: " + enemy_x);
-            System.err.println("Enemy y: " + enemy_y);
+            //System.err.println(gameAction);
+            // System.err.println("Player x: " + player_x);
+            // System.err.println("Player y: " + player_y);
+            // System.err.println("Enemy x: " + enemy_x);
+            // System.err.println("Enemy y: " + enemy_y);
         }
         //System.err.println(gameAction);
         //return player_moved;
     }
-    private int[] move_enemy() {
-        int[] enemy_moved = {enemy_x, enemy_y};
+    private void move_enemy() {
+        //int[] enemy_moved = {enemy_x, enemy_y};
         if (enemy_y > player_y) {
             enemy_y -= enemy_speed;
         }
@@ -77,20 +68,21 @@ public class Move{
         if (enemy_x < player_x) {
             enemy_x += enemy_speed;
         }
-        return enemy_moved;
+        //return enemy_moved;
     }
+
     private void teleport(){
-        if(player_x < 10){
-            player_x = 290;
+        if(player_x < acceptable){
+            player_x = boundary - acceptable;
         }
-        if(player_x > 290){
-            player_x = 10;
+        if(player_x > boundary - acceptable){
+            player_x = acceptable;
         }
-        if(player_y < 10){
-            player_y = 290;
+        if(player_y < acceptable){
+            player_y = boundary - acceptable;
         }
-        if(player_y > 290){
-            player_y = 10;
+        if(player_y > boundary - acceptable){
+            player_y = acceptable;
         }
     }
 }

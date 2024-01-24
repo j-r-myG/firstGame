@@ -28,7 +28,7 @@ public class CustomCanvas extends Canvas {
     int enemy_width = 20, enemy_height = 20;
     int coin_width = 25, coin_height = 25;
     int level = 1;
-    int player_speed = 8, enemy_speed = 2;
+    int player_speed = 10, enemy_speed = 2, en_max_speed = 5, max_level = 11;
 
     RNG rng = new RNG(); // for generating coordinates
     int[] spawn_coin = rng.generate_coord(); // generate random coordinate of coin.
@@ -115,7 +115,7 @@ public class CustomCanvas extends Canvas {
     public void spawn() {
         // call rng object to generate new coordinates for coin and down buff.
         spawn_coin = rng.generate_coord();
-        spawn_down = rng.generate_coord();
+        //spawn_down = rng.generate_coord();
         /* en_x = 50;
         en_y = 50; */
         if(spawn_coin[0] == spawn_down[0] && spawn_coin[1] == spawn_down[1]){
@@ -138,11 +138,11 @@ public class CustomCanvas extends Canvas {
              */
             spawn(); // call spawn method for new coordinates.
             level +=1;
-            if(enemy_speed < 4){
+            if(enemy_speed < en_max_speed){
                 // enemy's maximum speed must not be exceeded.
                 enemy_speed += 1;
             }
-            if(level == 10){
+            if(level == max_level){
                 endgame("You have won!");
             }
             System.err.println("Enemy Speed: "+enemy_speed);

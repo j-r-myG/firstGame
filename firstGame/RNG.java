@@ -3,14 +3,15 @@ package firstGame;
 import java.util.Random;
 
 public class RNG {
-    int boundary = 400;
+    int boundary = 400, min = 50, max = boundary-50;
 
     public int[] generate_coord(){
         Random rand = new Random();
         int[] spawn = new int[3]; // for storing x and y coordinates.
 
         for(int i = 0; i < 2; i++){
-            spawn[i] = rand.nextInt(boundary - 100); // coordinate should not be outside the frame.
+            //spawn[i] = rand.nextInt(10, boundary - 10); // coordinate should not be outside the frame.
+            spawn[i] = (int)(Math.random() * (max - min)) + min; // this is so stupid lol.
         }
 
         spawn[2] = rand.nextInt(10); // not sure...

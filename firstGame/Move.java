@@ -2,16 +2,12 @@ package firstGame;
 
 import java.awt.event.KeyEvent;
 
-
 public class Move{
-    int player_x;
-    int player_y; 
-    int player_speed; 
+    int player_x, player_y, player_speed; 
+    int enemy_x, enemy_y, enemy_speed;
     int gameAction;
     boolean moving;
-    int enemy_x; 
-    int enemy_y; 
-    int enemy_speed;
+    int boundary = 400, acceptable = 25, offset = 10;
     public  Move(int player_x, int player_y, int player_speed, int gameAction, boolean moving, int enemy_x, int enemy_y, int enemy_speed){
         //int player_x, int player_y, int player_speed, int gameAction, boolean moving
         this.player_x = player_x;
@@ -76,18 +72,19 @@ public class Move{
         }
         //return enemy_moved;
     }
+
     private void teleport(){
-        if(player_x < 10){
-            player_x = 290;
+        if(player_x < acceptable){
+            player_x = boundary - acceptable;
         }
-        if(player_x > 290){
-            player_x = 10;
+        if(player_x > boundary - acceptable){
+            player_x = acceptable;
         }
-        if(player_y < 10){
-            player_y = 290;
+        if(player_y < acceptable){
+            player_y = boundary - acceptable;
         }
-        if(player_y > 290){
-            player_y = 10;
+        if(player_y > boundary - acceptable){
+            player_y = acceptable;
         }
     }
 }

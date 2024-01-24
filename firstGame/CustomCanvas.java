@@ -9,9 +9,10 @@ import java.util.Arrays;
 import java.util.Timer;
 
 public class CustomCanvas extends Canvas {
+    int boundary = 400;
     public int x, y;
-    public int virtualX = 150, virtualY = 150;
-    public int pos = 8;
+    public int virtualX = boundary / 2, virtualY = boundary / 2;
+    //public int pos = 8;
     Timer timer;
     TimerTask task;
 
@@ -29,13 +30,14 @@ public class CustomCanvas extends Canvas {
     int level = 1;
     int player_speed = 8, enemy_speed = 2;
 
-    RNG rng = new RNG();
+    RNG rng = new RNG(); // for generating coordinates
     int[] spawn_coin = rng.generate_coord(); // generate random coordinate of coin.
-    int[] spawn_down = rng.generate_coord();
-    int[] spawn_enemy = rng.generate_coord();
-    public int en_x = spawn_enemy[0], en_y = spawn_enemy[1];// for enemy
+    int[] spawn_down = rng.generate_coord(); // generate coordinate of buff.
+    int[] spawn_enemy = rng.generate_coord(); // generate coordinate of enemy.
 
-    //Move move = new Move(virtualX, virtualY, player_speed, gameAction, moving, en_x, en_y, enemy_speed); // whoa oop stuff such programmer.
+    public int en_x = 10, en_y = 10;// spawn enemy only once.
+
+    //Move move = new Move(virtualX, virtualY, player_speed, gameAction, moving, en_x, en_y, enemy_speed); 
 
     public CustomCanvas() {
         for (int d = 0; d < directions.length; d++) {
@@ -82,22 +84,26 @@ public class CustomCanvas extends Canvas {
         Height = getHeight();
         g.setFont(new Font("Arial", Font.BOLD, 16));
         g.drawString("Level: "+level, 10, Height / 2);
-           
+        // paint player   .
         player = new Rectangle(virtualX, virtualY, imgCurent.getWidth(this) + 5, imgCurent.getHeight(this) + 5);
         g.setColor(Color.RED);
         g.fillRect(player.x, player.y, player.width, player.height);
         g.drawImage(imgCurent, virtualX, virtualY, this);
 
+        // enemy, coin, and down x,y rely on rng object to spawn at random places.
+        // paint coin.
         coin = new Rectangle(spawn_coin[0], spawn_coin[1], coin_width, coin_height);
         g.setColor(Color.YELLOW);
         g.fillRect(coin.x, coin.y, coin.width, coin.height);
         g.drawRect(coin.x, coin.y, 25, 25);
 
+        // paint down buff.
         speed_down = new Rectangle(spawn_down[0], spawn_down[1], enemy_width, enemy_height);
         g.setColor(Color.PINK);
         g.fillRect(speed_down.x, speed_down.y, speed_down.width, speed_down.height);
         g.drawRect(speed_down.x, speed_down.y, speed_down.width, speed_down.height);
 
+        // paint enemy
         enemy = new Rectangle(en_x, en_y, enemy_width, enemy_height);
         g.setColor(Color.GREEN);
         g.fillRect(enemy.x, enemy.y, enemy_width, enemy_height);
@@ -107,33 +113,33 @@ public class CustomCanvas extends Canvas {
     }
 
     public void spawn() {
+        // call rng object to generate new coordinates for coin and down buff.
         spawn_coin = rng.generate_coord();
         spawn_down = rng.generate_coord();
         /* en_x = 50;
         en_y = 50; */
+        if(spawn_coin[0] == spawn_down[0] && spawn_coin[1] == spawn_down[1]){
+            spawn(); // coin and buff should not spawn on each other.
+        }
         System.out.println("Coin: " + Arrays.toString(spawn_coin));
     }
 
 
     public void change_down() {
-        // change position of down buff.
+        // change position of down buff everytime player collects it.
         spawn_down = rng.generate_coord();
     }
 
     public void Collide() {
         if (player.intersects(coin)) {
-            System.out.println("wakokok nagbanggaan!!!");
-            /*
-             * virtualX= 0;
-             * virtualY= 0;
-             */
             /*
              * icon = new ImageIcon("die.png");
              * imgCurent = icon.getImage();
              */
-            spawn();
+            spawn(); // call spawn method for new coordinates.
             level +=1;
             if(enemy_speed < 4){
+                // enemy's maximum speed must not be exceeded.
                 enemy_speed += 1;
             }
             if(level == 10){
@@ -144,11 +150,11 @@ public class CustomCanvas extends Canvas {
         }
         if (player.intersects(speed_down)) {
             if(enemy_speed != 1){
-                // enemy should not reach speed 0.
+                // enemy speed should not reach 0.
                 change_down();
                 enemy_speed -= 1;
             }
-            change_down();
+            change_down(); // call to change down buff position.
             System.err.println("enemy speed -");
             repaint();
         }
@@ -160,13 +166,14 @@ public class CustomCanvas extends Canvas {
 
     public void moveIt() {
         Move move = new Move(virtualX, virtualY, player_speed, gameAction, moving, en_x, en_y, enemy_speed); // whoa oop stuff such programmer.
-        //move.move_player();
+        // oop stuff to move player and enemy. 
         virtualX = move.player_x;
         virtualY = move.player_y;
         en_x = move.enemy_x;
         en_y = move.enemy_y;
         repaint();
     }
+
     public void endgame(String msg){
         //this.setEnabled(false);
         System.exit(0);

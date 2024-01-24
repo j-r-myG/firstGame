@@ -49,7 +49,7 @@ public class CustomCanvas extends Canvas {
         task = new TimerTask() {
             public void run() {
                 moveIt();
-
+                
             }// end run
         };// end task
 
@@ -61,6 +61,7 @@ public class CustomCanvas extends Canvas {
             public void keyPressed(KeyEvent evt) {
                 gameAction = evt.getKeyCode();
                 moving = true;
+                //System.err.println(gameAction);
             }
 
             @Override
@@ -113,6 +114,7 @@ public class CustomCanvas extends Canvas {
 
 
     public void change_down() {
+        // change position of down buff.
         spawn_down = rng.generate_coord();
     }
 
@@ -140,6 +142,7 @@ public class CustomCanvas extends Canvas {
         }
         if (player.intersects(speed_down)) {
             if(enemy_speed != 1){
+                // enemy should not reach speed 0.
                 change_down();
                 enemy_speed -= 1;
             }
@@ -153,79 +156,13 @@ public class CustomCanvas extends Canvas {
         }
     }
 
-    public void move_enemy() {
-        if (en_y > virtualY) {
-            en_y -= enemy_speed;
-        }
-        if (en_y < virtualY) {
-            en_y += enemy_speed;
-        }
-        if (en_x > virtualX) {
-            en_x -= enemy_speed;
-        }
-        if (en_x < virtualX) {
-            en_x += enemy_speed;
-        }
-    }
-    public void teleport(){
-        if(virtualX < 10){
-            virtualX = 290;
-        }
-        if(virtualX > 290){
-            virtualX = 10;
-        }
-        if(virtualY < 10){
-            virtualY = 290;
-        }
-        if(virtualY > 290){
-            virtualY = 10;
-        }
-    }
     public void moveIt() {
-        if (!moving) {
-            return;
-        }
-
-        switch (gameAction) {
-            case KeyEvent.VK_DOWN:
-                x = 1;
-                virtualY += 5;
-                teleport();
-                frame = (frame + 1) % 4;
-                imgCurent = img[frame + 4];
-                move_enemy();
-                repaint();
-                break;
-            case KeyEvent.VK_UP:
-                x = 2;
-                virtualY -= 5;
-                teleport();
-                frame = (frame + 1) % 4;
-                imgCurent = img[frame + 0];
-                move_enemy();
-                repaint();
-                break;
-            case KeyEvent.VK_LEFT:
-                x = 3;
-                // movementleft();
-                virtualX -= 5;
-                teleport();
-                frame = (frame + 1) % 4;
-                imgCurent = img[frame + 8];
-                move_enemy();
-                repaint();
-                break;
-            case KeyEvent.VK_RIGHT:
-                x = 4;
-                // movementright();
-                virtualX += 5;
-                teleport();
-                frame = (frame + 1) % 4;
-                imgCurent = img[frame + 12];
-                move_enemy();
-                repaint();
-                break;
-        }
+        Move move = new Move(virtualX, virtualY, player_speed, gameAction, moving, en_x, en_y, enemy_speed); // whoa oop stuff such programmer.
+        virtualX = move.player_x;
+        virtualY = move.player_y;
+        en_x = move.enemy_x;
+        en_y = move.enemy_y;
+        repaint();
     }
     public void endgame(String msg){
         //this.setEnabled(false);

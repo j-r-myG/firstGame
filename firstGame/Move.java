@@ -35,16 +35,14 @@ public class Move{
                 //move_enemy();
                 break;
             case KeyEvent.VK_LEFT:
-                // movementleft();
                 this.player_x -= 5;
                 teleport();
                 //move_enemy();
                 break;
             case KeyEvent.VK_RIGHT:
-                // movementright();
                 this.player_x += 5;
                 teleport();
-                move_enemy();
+                //move_enemy();
                 break;
             }
             //System.err.println(gameAction);

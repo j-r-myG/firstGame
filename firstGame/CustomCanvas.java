@@ -25,30 +25,32 @@ public class CustomCanvas extends Canvas {
     Image[] img = new Image[16]; // Store character images
     ImageIcon icon;
     Rectangle player, coin, enemy, speed_down;
+    String direction;
 
     int enemy_width = 20, enemy_height = 20;
     int coin_width = 25, coin_height = 25;
-    int level = 1;
+    int level = 1, position;
     int player_speed = 10, enemy_speed = 2, en_max_speed = 5, max_level = 11;
 
     RNG rng = new RNG(); // for generating coordinates
     int[] spawn_coin = rng.generate_coord(); // generate random coordinate of coin.
     int[] spawn_down = rng.generate_coord(); // generate coordinate of buff.
-
+    
     public int en_x = 10, en_y = 10;// spawn enemy only once.
 
-    //Move move = new Move(virtualX, virtualY, player_speed, gameAction, moving, en_x, en_y, enemy_speed); 
+    GetImages getImages = new GetImages(position, direction);
+
 
     public CustomCanvas() {
         for (int d = 0; d < directions.length; d++) {
             for (int f = 1; f <= 4; f++) {
-                icon = new ImageIcon(directions[d] + f + ".png");
+                icon = new ImageIcon("firstGame/images/"+directions[d] + f + ".png");
                 img[index] = icon.getImage();
                 index++;
             } // loop frame to create all images in array form
         }
-
-        icon = new ImageIcon("images/Idle.png");
+        //icon = new ImageIcon("firstGame/images/idle/"+getImages.get_idle_image()+".png");
+        //icon = new ImageIcon("firstGame/images/idle/idle.png");
         imgCurrent = icon.getImage(); // initial image of naruto upon running code
 
         timer = new Timer(true);
@@ -60,7 +62,7 @@ public class CustomCanvas extends Canvas {
         };// end task
 
         timer.schedule(task, 750, 100);
-        setBackground(Color.DARK_GRAY);
+        setBackground(Color.GRAY);
 
         addKeyListener(new KeyAdapter() {
             @Override
@@ -74,6 +76,8 @@ public class CustomCanvas extends Canvas {
             public void keyReleased(KeyEvent evt) {
                 gameAction = 0;
                 moving = false;
+                icon = new ImageIcon("firstGame/images/idle.png");
+                imgCurrent = icon.getImage();
             }
         });
 
@@ -82,17 +86,16 @@ public class CustomCanvas extends Canvas {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        int Height;
-        Height = getHeight();
-        g.setFont(new Font("Arial", Font.BOLD, 16));
-        g.drawString("Level: "+level, 10, Height / 2);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.drawString("Level: "+level, 10, 20);
+
         // paint player.
-        player = new Rectangle(virtualX, virtualY, imgCurrent.getWidth(this) + 5, imgCurrent.getHeight(this) + 5);
+        player = new Rectangle(virtualX, virtualY, imgCurrent.getWidth(this), imgCurrent.getHeight(this));
         g.setColor(Color.RED);
         g.fillRect(player.x, player.y, player.width, player.height);
         g.drawImage(imgCurrent, virtualX, virtualY, this);
 
-        // enemy, coin, and down x,y rely on rng object to spawn at random places.
+        // coin, and down (x,y) rely on rng object to spawn at random places.
         // paint coin.
         coin = new Rectangle(spawn_coin[0], spawn_coin[1], coin_width, coin_height);
         g.setColor(Color.YELLOW);
@@ -118,11 +121,6 @@ public class CustomCanvas extends Canvas {
         // call rng object to generate new coordinates for coin and down buff.
         spawn_coin = rng.generate_coord();
         //spawn_down = rng.generate_coord();
-        /* en_x = 50;
-        en_y = 50; */
-        if(spawn_coin[0] == spawn_down[0] && spawn_coin[1] == spawn_down[1]){
-            spawn(); // coin and buff should not spawn on each other.
-        }
         System.out.println("Coin: " + Arrays.toString(spawn_coin));
     }
 
@@ -133,11 +131,10 @@ public class CustomCanvas extends Canvas {
     }
 
     public void Collide() {
+        if(coin.intersects(speed_down)){
+            spawn(); // coin and buff should not spawn on each other.
+        }
         if (player.intersects(coin)) {
-            /*
-             * icon = new ImageIcon("die.png");
-             * imgCurent = icon.getImage();
-             */
             spawn(); // call spawn method for new coordinates.
             level +=1;
             if(enemy_speed < en_max_speed){
@@ -145,9 +142,10 @@ public class CustomCanvas extends Canvas {
                 enemy_speed += 1;
             }
             if(level == max_level){
+                System.out.println("Win!!");
                 endgame("You have won!");
             }
-            System.err.println("+ Enemy Speed: "+enemy_speed);
+            System.out.println("+ Enemy Speed: "+enemy_speed);
             repaint();
         }
         if (player.intersects(speed_down)) {
@@ -157,11 +155,11 @@ public class CustomCanvas extends Canvas {
                 enemy_speed -= 1;
             }
             change_down(); // call to change down buff position.
-            System.err.println("- Enemy Speed: "+enemy_speed);
+            System.out.println("- Enemy Speed: "+enemy_speed);
             repaint();
         }
         if (player.intersects(enemy)) {
-            System.err.println("Lose!!");
+            System.out.println("Lose!!");
             endgame("You have died!");
         }
     }
@@ -169,6 +167,8 @@ public class CustomCanvas extends Canvas {
     public void moveIt() {
         Move move = new Move(virtualX, virtualY, player_speed, gameAction, moving, en_x, en_y, enemy_speed); // whoa oop stuff such programmer.
         // oop stuff to move player and enemy. 
+        // DO THIS
+        // imgCurrent = move.imgCurrent; do shit from Move class. maybe delete GetImages.
         virtualX = move.player_x;
         virtualY = move.player_y;
         en_x = move.enemy_x;

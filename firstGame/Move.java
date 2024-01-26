@@ -8,7 +8,7 @@ public class Move{
     int gameAction;
     boolean moving;
     int boundary = 400, acceptable = 25, offset = 10;
-    public  Move(int player_x, int player_y, int player_speed, int gameAction, boolean moving, int enemy_x, int enemy_y, int enemy_speed){
+    public Move(int player_x, int player_y, int player_speed, int gameAction, boolean moving, int enemy_x, int enemy_y, int enemy_speed){
         //int player_x, int player_y, int player_speed, int gameAction, boolean moving
         this.player_x = player_x;
         this.player_y =  player_y; 

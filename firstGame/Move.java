@@ -24,23 +24,24 @@ public class Move{
     private void move_player(){
         if(moving){
             switch (gameAction) {
+            // move player a number of frames to the direction of keys.
             case KeyEvent.VK_DOWN:
-                this.player_y += 5;
+                this.player_y += player_speed;
                 teleport();
                 //move_enemy();
                 break;
             case KeyEvent.VK_UP:
-                this.player_y -= 5;
+                this.player_y -= player_speed;
                 teleport();
                 //move_enemy();
                 break;
             case KeyEvent.VK_LEFT:
-                this.player_x -= 5;
+                this.player_x -= player_speed;
                 teleport();
                 //move_enemy();
                 break;
             case KeyEvent.VK_RIGHT:
-                this.player_x += 5;
+                this.player_x += player_speed;
                 teleport();
                 //move_enemy();
                 break;
@@ -56,33 +57,36 @@ public class Move{
     }
     private void move_enemy() {
         //int[] enemy_moved = {enemy_x, enemy_y};
-        if (enemy_y > player_y) {
+        // move enemy based towards where the player is.
+        // added - 10 so the enemy will align its the center to the player rather than top left.
+        if (enemy_y > player_y - 10) {
             enemy_y -= enemy_speed;
         }
-        if (enemy_y < player_y) {
+        if (enemy_y < player_y - 10) {
             enemy_y += enemy_speed;
         }
-        if (enemy_x > player_x) {
+        if (enemy_x > player_x - 10) {
             enemy_x -= enemy_speed;
         }
-        if (enemy_x < player_x) {
+        if (enemy_x < player_x - 10) {
             enemy_x += enemy_speed;
         }
         //return enemy_moved;
     }
 
     private void teleport(){
+        // teleport player to the other side of the frame.
         if(player_x < acceptable){
-            player_x = boundary - acceptable;
+            player_x = boundary - acceptable; // teleport to right side.
         }
         if(player_x > boundary - acceptable){
-            player_x = acceptable;
+            player_x = acceptable; // teleport to left side.
         }
         if(player_y < acceptable){
-            player_y = boundary - acceptable;
+            player_y = boundary - acceptable; // teleport to top side.
         }
-        if(player_y > boundary - acceptable){
-            player_y = acceptable;
+        if(player_y > boundary - acceptable){ 
+            player_y = acceptable; // teleport to bottom side.
         }
     }
 }

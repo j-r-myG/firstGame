@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.TimerTask;
 import java.util.Arrays;
 import java.util.Timer;
@@ -16,7 +17,7 @@ public class CustomCanvas extends Canvas {
     Timer timer;
     TimerTask task;
 
-    Image imgCurent;
+    Image imgCurrent;
     boolean moving = false;
     int gameAction, frame, index = 0;
 
@@ -33,7 +34,6 @@ public class CustomCanvas extends Canvas {
     RNG rng = new RNG(); // for generating coordinates
     int[] spawn_coin = rng.generate_coord(); // generate random coordinate of coin.
     int[] spawn_down = rng.generate_coord(); // generate coordinate of buff.
-    int[] spawn_enemy = rng.generate_coord(); // generate coordinate of enemy.
 
     public int en_x = 10, en_y = 10;// spawn enemy only once.
 
@@ -47,7 +47,9 @@ public class CustomCanvas extends Canvas {
                 index++;
             } // loop frame to create all images in array form
         }
-        imgCurent = img[0]; // initial image of naruto upon running code
+
+        icon = new ImageIcon("images/Idle.png");
+        imgCurrent = icon.getImage(); // initial image of naruto upon running code
 
         timer = new Timer(true);
         task = new TimerTask() {
@@ -84,11 +86,11 @@ public class CustomCanvas extends Canvas {
         Height = getHeight();
         g.setFont(new Font("Arial", Font.BOLD, 16));
         g.drawString("Level: "+level, 10, Height / 2);
-        // paint player   .
-        player = new Rectangle(virtualX, virtualY, imgCurent.getWidth(this) + 5, imgCurent.getHeight(this) + 5);
+        // paint player.
+        player = new Rectangle(virtualX, virtualY, imgCurrent.getWidth(this) + 5, imgCurrent.getHeight(this) + 5);
         g.setColor(Color.RED);
         g.fillRect(player.x, player.y, player.width, player.height);
-        g.drawImage(imgCurent, virtualX, virtualY, this);
+        g.drawImage(imgCurrent, virtualX, virtualY, this);
 
         // enemy, coin, and down x,y rely on rng object to spawn at random places.
         // paint coin.
@@ -145,7 +147,7 @@ public class CustomCanvas extends Canvas {
             if(level == max_level){
                 endgame("You have won!");
             }
-            System.err.println("Enemy Speed: "+enemy_speed);
+            System.err.println("+ Enemy Speed: "+enemy_speed);
             repaint();
         }
         if (player.intersects(speed_down)) {
@@ -155,7 +157,7 @@ public class CustomCanvas extends Canvas {
                 enemy_speed -= 1;
             }
             change_down(); // call to change down buff position.
-            System.err.println("enemy speed -");
+            System.err.println("- Enemy Speed: "+enemy_speed);
             repaint();
         }
         if (player.intersects(enemy)) {
@@ -176,13 +178,16 @@ public class CustomCanvas extends Canvas {
 
     public void endgame(String msg){
         //this.setEnabled(false);
-        System.exit(0);
         en_x = 50;
         en_y = 50;
+        // set speeds of enemy and player to 0 to disable them.
+        enemy_speed = 0;
+        player_speed = 0;
         virtualX = 100;
         virtualY = 100;
         JOptionPane.showMessageDialog(this, msg,
-                "INFORMATION",
+                "Game Has Ended.",
                 JOptionPane.INFORMATION_MESSAGE);        
+                System.exit(0);
     }
 }

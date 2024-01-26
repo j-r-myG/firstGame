@@ -8,7 +8,7 @@ import java.awt.event.WindowEvent;
 public class main extends JFrame{
     CustomCanvas DrawingArea;
     int x, y;
-    int boundary = 400;
+    int boundary = 700;
     public main(){
         int width = boundary, height = boundary;
         Container Pane;

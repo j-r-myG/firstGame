@@ -7,7 +7,7 @@ public class Move{
     int enemy_x, enemy_y, enemy_speed;
     int gameAction;
     boolean moving;
-    int boundary = 400, acceptable = 25, offset = 10;
+    int boundary = 700, acceptable = 25;
     public Move(int player_x, int player_y, int player_speed, int gameAction, boolean moving, int enemy_x, int enemy_y, int enemy_speed){
         //int player_x, int player_y, int player_speed, int gameAction, boolean moving
         this.player_x = player_x;
@@ -58,17 +58,16 @@ public class Move{
     private void move_enemy() {
         //int[] enemy_moved = {enemy_x, enemy_y};
         // move enemy based towards where the player is.
-        // added - 10 so the enemy will align its the center to the player rather than top left.
-        if (enemy_y > player_y - 10) {
+        if (enemy_y > player_y) {
             enemy_y -= enemy_speed;
         }
-        if (enemy_y < player_y - 10) {
+        if (enemy_y < player_y) {
             enemy_y += enemy_speed;
         }
-        if (enemy_x > player_x - 10) {
+        if (enemy_x > player_x) {
             enemy_x -= enemy_speed;
         }
-        if (enemy_x < player_x - 10) {
+        if (enemy_x < player_x) {
             enemy_x += enemy_speed;
         }
         //return enemy_moved;

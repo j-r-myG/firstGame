@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Timer;
 
 public class CustomCanvas extends Canvas {
-    int boundary = 400;
+    int boundary = 700;
     public int x, y;
     public int virtualX = boundary / 2, virtualY = boundary / 2;
     //public int pos = 8;
@@ -30,7 +30,7 @@ public class CustomCanvas extends Canvas {
     int enemy_width = 20, enemy_height = 20;
     int coin_width = 25, coin_height = 25;
     int level = 1, position;
-    int player_speed = 10, enemy_speed = 2, en_max_speed = 5, max_level = 11;
+    int player_speed = 10, enemy_speed = 2, en_max_speed = 8, max_level = 11;
 
     RNG rng = new RNG(); // for generating coordinates
     int[] spawn_coin = rng.generate_coord(); // generate random coordinate of coin.
@@ -38,7 +38,7 @@ public class CustomCanvas extends Canvas {
     
     public int en_x = 10, en_y = 10;// spawn enemy only once.
 
-    GetImages getImages = new GetImages(position, direction);
+    //GetImages getImages = new GetImages(position, direction);
 
 
     public CustomCanvas() {

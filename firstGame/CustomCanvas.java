@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.util.TimerTask;
 import java.util.Arrays;
 import java.util.Timer;
@@ -13,11 +12,11 @@ public class CustomCanvas extends Canvas {
     int boundary = 700;
     public int x, y;
     public int virtualX = boundary / 2, virtualY = boundary / 2;
-    public int pos = 1;
+    public int pos = 1, en_pos = 1;
     Timer timer;
     TimerTask task;
 
-    Image imgCurrent;
+    Image imgCurrent, enemyImage, buffImage, coinImage, backgroundImage ;
     boolean moving = false;
     int gameAction, frame, index = 0;
 
@@ -30,7 +29,7 @@ public class CustomCanvas extends Canvas {
     int enemy_width = 20, enemy_height = 20;
     int coin_width = 25, coin_height = 25;
     int level = 1;
-    int player_speed = 10, enemy_speed = 4, en_max_speed = 9, max_level = 11;
+    int player_speed = 10, enemy_speed = 5, en_max_speed = 9, max_level = 11;
 
     RNG rng = new RNG(); // for generating coordinates
     int[] spawn_coin = rng.generate_coord(); // generate random coordinate of coin.
@@ -42,16 +41,7 @@ public class CustomCanvas extends Canvas {
 
 
     public CustomCanvas() {
-        for (int d = 0; d < directions.length; d++) {
-            for (int f = 1; f <= 4; f++) {
-                icon = new ImageIcon("firstGame/images/"+directions[d] + f + ".png");
-                img[index] = icon.getImage();
-                index++;
-            } // loop frame to create all images in array form
-        }
-        //icon = new ImageIcon("firstGame/images/idle/"+getImages.get_idle_image()+".png");
-        icon = new ImageIcon("firstGame/images/idle.png");
-        imgCurrent = icon.getImage(); // initial image of naruto upon running code
+        set_images();
 
         timer = new Timer(true);
         task = new TimerTask() {
@@ -83,36 +73,50 @@ public class CustomCanvas extends Canvas {
 
     }
 
+    private void set_images(){
+        icon = new ImageIcon("firstGame/images/idle.png");
+        imgCurrent = icon.getImage(); // initial image of naruto upon running code
+        icon = new ImageIcon("firstGame/images/enemy.png");
+        enemyImage = icon.getImage();
+        icon = new ImageIcon("firstGame/images/buff.png");
+        buffImage = icon.getImage();
+        icon = new ImageIcon("firstGame/images/coin.png");
+        coinImage = icon.getImage();
+        icon = new ImageIcon("firstGame/images/background.png");
+        backgroundImage = icon.getImage();
+    }
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        
+        g.drawImage(backgroundImage, 0, 0, this);
+        
         g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString("Level: "+level, 10, 20);
+        g.drawString("Avoid the shuriken.",10,30);
+        g.drawString("Collect ramen to advance level.",10,50);
+        g.drawString("Collect rasengan to slow shuriken.",10,70);
+        g.drawString("Level: "+level+"/10", 10, 90);
+        g.drawString("Enemy Speed = "+enemy_speed, 10, 110);
 
         // paint player.
         player = new Rectangle(virtualX, virtualY, imgCurrent.getWidth(this), imgCurrent.getHeight(this));
-        g.setColor(Color.RED);
-        g.fillRect(player.x, player.y, player.width, player.height);
+        //g.setColor(Color.RED);
+        //g.fillRect(player.x, player.y, player.width, player.height);
         g.drawImage(imgCurrent, virtualX, virtualY, this);
 
         // coin, and down (x,y) rely on rng object to spawn at random places.
         // paint coin.
-        coin = new Rectangle(spawn_coin[0], spawn_coin[1], coin_width, coin_height);
-        g.setColor(Color.YELLOW);
-        g.fillRect(coin.x, coin.y, coin.width, coin.height);
-        g.drawRect(coin.x, coin.y, 25, 25);
+        coin = new Rectangle(spawn_coin[0], spawn_coin[1], coinImage.getWidth(this), coinImage.getHeight(this));
+        g.drawImage(coinImage, coin.x, coin.y, this);
 
         // paint down buff.
-        speed_down = new Rectangle(spawn_down[0], spawn_down[1], enemy_width, enemy_height);
-        g.setColor(Color.PINK);
-        g.fillRect(speed_down.x, speed_down.y, speed_down.width, speed_down.height);
-        g.drawRect(speed_down.x, speed_down.y, speed_down.width, speed_down.height);
+        speed_down = new Rectangle(spawn_down[0], spawn_down[1], buffImage.getWidth(this), buffImage.getHeight(this));
+        g.drawImage(buffImage, speed_down.x, speed_down.y, this);
 
         // paint enemy
-        enemy = new Rectangle(en_x, en_y, enemy_width, enemy_height);
-        g.setColor(Color.GREEN);
-        g.fillRect(enemy.x, enemy.y, enemy_width, enemy_height);
-        g.drawRect(enemy.x, enemy.y, enemy_width, enemy_height);
+        enemy = new Rectangle(en_x, en_y, enemyImage.getWidth(this), enemyImage.getHeight(this));
+        g.drawImage(enemyImage, enemy.x, enemy.y, this);
 
         Collide();
     }
@@ -139,7 +143,7 @@ public class CustomCanvas extends Canvas {
             level +=1;
             if(enemy_speed < en_max_speed){
                 // enemy's maximum speed must not be exceeded.
-                enemy_speed += 1;
+                enemy_speed += 2;
             }
             if(level == max_level){
                 System.out.println("Win!!");
@@ -172,10 +176,19 @@ public class CustomCanvas extends Canvas {
             if(pos > 4){
                 pos = 1;
             }
-            icon = new ImageIcon(move.gen_images(pos));
+            icon = new ImageIcon(move.gen_images("p",pos));
             imgCurrent = icon.getImage(); 
             pos++;
         }
+        if(en_pos > 4){
+            en_pos = 1;
+        }
+        icon = new ImageIcon(move.gen_images("e", en_pos)); // rotating enemy using an index.
+        enemyImage = icon.getImage();
+        icon = new ImageIcon(move.gen_images("x", en_pos)); // rotating buff using an ndex.
+        buffImage = icon.getImage();
+        en_pos++;
+
         virtualX = move.player_x;
         virtualY = move.player_y;
         en_x = move.enemy_x;
@@ -185,13 +198,13 @@ public class CustomCanvas extends Canvas {
 
     public void endgame(String msg){
         //this.setEnabled(false);
-        en_x = 50;
-        en_y = 50;
+        en_x = boundary - 50;
+        en_y = boundary / 2;
         // set speeds of enemy and player to 0 to disable them.
         enemy_speed = 0;
         player_speed = 0;
-        virtualX = 100;
-        virtualY = 100;
+        virtualX = boundary - 100;
+        virtualY = boundary / 2;
         JOptionPane.showMessageDialog(this, msg,
                 "Game Has Ended.",
                 JOptionPane.INFORMATION_MESSAGE);        

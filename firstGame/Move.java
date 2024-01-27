@@ -26,13 +26,22 @@ public class Move{
         move_enemy();
     }
 
-    public String gen_images(int pos){
+    public String gen_images(String im, int pos){
         pos++; // increment pos.
         if(pos > 4){
             pos = 1; // reset position 
         }
-        currImage = "firstGame/images/"+direction+pos+".png";
-        //System.out.println(currImage);
+        if(im == "p"){
+            currImage = "firstGame/images/"+direction+pos+".png"; // locate image for player.
+            //System.out.println(currImage);
+        }
+        else if (im == "e"){
+            currImage = "firstGame/images/enemy"+pos+".png"; // locate image for enemy.
+        }
+        else{
+            currImage = "firstGame/images/buff"+pos+".png"; // locate image for buff.
+        }
+
         return currImage;
     }
     private void move_player(){
@@ -84,16 +93,16 @@ public class Move{
 
     private void teleport(){
         // teleport player to the other side of the frame.
-        if(player_x < acceptable){
-            player_x = boundary - acceptable; // teleport to right side.
+        if(player_x < acceptable-20){
+            player_x = boundary - (acceptable + 25); // teleport to right side.
         }
-        if(player_x > boundary - acceptable){
+        if(player_x > boundary - (acceptable+20)){
             player_x = acceptable; // teleport to left side.
         }
-        if(player_y < acceptable){
-            player_y = boundary - acceptable; // teleport to top side.
+        if(player_y < acceptable - 20){
+            player_y = boundary - (acceptable + 65); // teleport to top side.
         }
-        if(player_y > boundary - acceptable){ 
+        if(player_y > boundary - (acceptable + 65)){ 
             player_y = acceptable; // teleport to bottom side.
         }
     }

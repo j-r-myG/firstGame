@@ -3,7 +3,7 @@ package firstGame;
 import java.util.Random;
 
 public class RNG {
-    int boundary = 700, min = 50, max = boundary-50;
+    int boundary = 700, min = 50, max = boundary-70;
 
     public int[] generate_coord(){
         Random rand = new Random();

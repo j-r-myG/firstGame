@@ -7,8 +7,12 @@ public class Move{
     int enemy_x, enemy_y, enemy_speed;
     int gameAction;
     boolean moving;
-    int boundary = 400, acceptable = 25, offset = 10;
-    public  Move(int player_x, int player_y, int player_speed, int gameAction, boolean moving, int enemy_x, int enemy_y, int enemy_speed){
+    int boundary = 700, acceptable = 25;
+    //int pos;
+    String direction, currImage;
+    //GetImages getImages = new GetImages();
+
+    public Move(int player_x, int player_y, int player_speed, int gameAction, boolean moving, int enemy_x, int enemy_y, int enemy_speed){
         //int player_x, int player_y, int player_speed, int gameAction, boolean moving
         this.player_x = player_x;
         this.player_y =  player_y; 
@@ -21,41 +25,57 @@ public class Move{
         move_player();
         move_enemy();
     }
+
+    public String gen_images(String im, int pos){
+        pos++; // increment pos.
+        if(pos > 4){
+            pos = 1; // reset position 
+        }
+        if(im == "p"){
+            currImage = "firstGame/images/"+direction+pos+".png"; // locate image for player.
+            //System.out.println(currImage);
+        }
+        else if (im == "e"){
+            currImage = "firstGame/images/enemy"+pos+".png"; // locate image for enemy.
+        }
+        else{
+            currImage = "firstGame/images/buff"+pos+".png"; // locate image for buff.
+        }
+
+        return currImage;
+    }
     private void move_player(){
         if(moving){
             switch (gameAction) {
+            // move player a number of frames to the direction of keys.
             case KeyEvent.VK_DOWN:
-                this.player_y += 5;
+                direction = "D";
+                this.player_y += player_speed;
                 teleport();
-                //move_enemy();
                 break;
             case KeyEvent.VK_UP:
-                this.player_y -= 5;
+                direction = "U";
+                this.player_y -= player_speed;
                 teleport();
-                //move_enemy();
                 break;
             case KeyEvent.VK_LEFT:
-                this.player_x -= 5;
+                direction = "L";
+                this.player_x -= player_speed;
                 teleport();
-                //move_enemy();
                 break;
             case KeyEvent.VK_RIGHT:
-                this.player_x += 5;
+                direction = "R";
+                this.player_x += player_speed;
                 teleport();
-                //move_enemy();
                 break;
             }
-            //System.err.println(gameAction);
-            // System.err.println("Player x: " + player_x);
-            // System.err.println("Player y: " + player_y);
-            // System.err.println("Enemy x: " + enemy_x);
-            // System.err.println("Enemy y: " + enemy_y);
+            
         }
-        //System.err.println(gameAction);
-        //return player_moved;
+       
     }
     private void move_enemy() {
         //int[] enemy_moved = {enemy_x, enemy_y};
+        // move enemy based towards where the player is.
         if (enemy_y > player_y) {
             enemy_y -= enemy_speed;
         }
@@ -72,17 +92,18 @@ public class Move{
     }
 
     private void teleport(){
-        if(player_x < acceptable){
-            player_x = boundary - acceptable;
+        // teleport player to the other side of the frame.
+        if(player_x < acceptable-20){
+            player_x = boundary - (acceptable + 25); // teleport to right side.
         }
-        if(player_x > boundary - acceptable){
-            player_x = acceptable;
+        if(player_x > boundary - (acceptable+20)){
+            player_x = acceptable; // teleport to left side.
         }
-        if(player_y < acceptable){
-            player_y = boundary - acceptable;
+        if(player_y < acceptable - 20){
+            player_y = boundary - (acceptable + 65); // teleport to top side.
         }
-        if(player_y > boundary - acceptable){
-            player_y = acceptable;
+        if(player_y > boundary - (acceptable + 65)){ 
+            player_y = acceptable; // teleport to bottom side.
         }
     }
 }

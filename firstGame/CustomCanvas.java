@@ -159,7 +159,7 @@ public class CustomCanvas extends Canvas {
                 enemy_speed -= 1;
             }
             change_down(); // call to change down buff position.
-            System.out.println("- Enemy Speed: "+enemy_speed);
+            System.out.println("- Enemy Speed: " +enemy_speed);
             repaint();
         }
         if (player.intersects(enemy)) {

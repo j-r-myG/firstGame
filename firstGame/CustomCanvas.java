@@ -13,7 +13,7 @@ public class CustomCanvas extends Canvas {
     int boundary = 700;
     public int x, y;
     public int virtualX = boundary / 2, virtualY = boundary / 2;
-    //public int pos = 8;
+    public int pos = 1;
     Timer timer;
     TimerTask task;
 
@@ -29,8 +29,8 @@ public class CustomCanvas extends Canvas {
 
     int enemy_width = 20, enemy_height = 20;
     int coin_width = 25, coin_height = 25;
-    int level = 1, position;
-    int player_speed = 10, enemy_speed = 2, en_max_speed = 8, max_level = 11;
+    int level = 1;
+    int player_speed = 10, enemy_speed = 4, en_max_speed = 9, max_level = 11;
 
     RNG rng = new RNG(); // for generating coordinates
     int[] spawn_coin = rng.generate_coord(); // generate random coordinate of coin.
@@ -50,7 +50,7 @@ public class CustomCanvas extends Canvas {
             } // loop frame to create all images in array form
         }
         //icon = new ImageIcon("firstGame/images/idle/"+getImages.get_idle_image()+".png");
-        //icon = new ImageIcon("firstGame/images/idle/idle.png");
+        icon = new ImageIcon("firstGame/images/idle.png");
         imgCurrent = icon.getImage(); // initial image of naruto upon running code
 
         timer = new Timer(true);
@@ -149,7 +149,7 @@ public class CustomCanvas extends Canvas {
             repaint();
         }
         if (player.intersects(speed_down)) {
-            if(enemy_speed != 1){
+            if(enemy_speed != 3){
                 // enemy speed should not reach 0.
                 change_down();
                 enemy_speed -= 1;
@@ -168,7 +168,14 @@ public class CustomCanvas extends Canvas {
         Move move = new Move(virtualX, virtualY, player_speed, gameAction, moving, en_x, en_y, enemy_speed); // whoa oop stuff such programmer.
         // oop stuff to move player and enemy. 
         // DO THIS
-        // imgCurrent = move.imgCurrent; do shit from Move class. maybe delete GetImages.
+        if(moving){
+            if(pos > 4){
+                pos = 1;
+            }
+            icon = new ImageIcon(move.gen_images(pos));
+            imgCurrent = icon.getImage(); 
+            pos++;
+        }
         virtualX = move.player_x;
         virtualY = move.player_y;
         en_x = move.enemy_x;

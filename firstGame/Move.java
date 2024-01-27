@@ -8,6 +8,10 @@ public class Move{
     int gameAction;
     boolean moving;
     int boundary = 700, acceptable = 25;
+    //int pos;
+    String direction, currImage;
+    //GetImages getImages = new GetImages();
+
     public Move(int player_x, int player_y, int player_speed, int gameAction, boolean moving, int enemy_x, int enemy_y, int enemy_speed){
         //int player_x, int player_y, int player_speed, int gameAction, boolean moving
         this.player_x = player_x;
@@ -21,39 +25,44 @@ public class Move{
         move_player();
         move_enemy();
     }
+
+    public String gen_images(int pos){
+        pos++; // increment pos.
+        if(pos > 4){
+            pos = 1; // reset position 
+        }
+        currImage = "firstGame/images/"+direction+pos+".png";
+        //System.out.println(currImage);
+        return currImage;
+    }
     private void move_player(){
         if(moving){
             switch (gameAction) {
             // move player a number of frames to the direction of keys.
             case KeyEvent.VK_DOWN:
+                direction = "D";
                 this.player_y += player_speed;
                 teleport();
-                //move_enemy();
                 break;
             case KeyEvent.VK_UP:
+                direction = "U";
                 this.player_y -= player_speed;
                 teleport();
-                //move_enemy();
                 break;
             case KeyEvent.VK_LEFT:
+                direction = "L";
                 this.player_x -= player_speed;
                 teleport();
-                //move_enemy();
                 break;
             case KeyEvent.VK_RIGHT:
+                direction = "R";
                 this.player_x += player_speed;
                 teleport();
-                //move_enemy();
                 break;
             }
-            //System.err.println(gameAction);
-            // System.err.println("Player x: " + player_x);
-            // System.err.println("Player y: " + player_y);
-            // System.err.println("Enemy x: " + enemy_x);
-            // System.err.println("Enemy y: " + enemy_y);
+            
         }
-        //System.err.println(gameAction);
-        //return player_moved;
+       
     }
     private void move_enemy() {
         //int[] enemy_moved = {enemy_x, enemy_y};

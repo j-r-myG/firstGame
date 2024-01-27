@@ -141,9 +141,10 @@ public class CustomCanvas extends Canvas {
         if (player.intersects(coin)) {
             spawn(); // call spawn method for new coordinates.
             level +=1;
-            if(enemy_speed < en_max_speed){
+            enemy_speed += 2;
+            if(enemy_speed > en_max_speed){
                 // enemy's maximum speed must not be exceeded.
-                enemy_speed += 2;
+                enemy_speed = en_max_speed;
             }
             if(level == max_level){
                 System.out.println("Win!!");
